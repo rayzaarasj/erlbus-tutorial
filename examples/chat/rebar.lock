@@ -1,0 +1,30 @@
+{"1.1.0",
+[{<<"cowboy">>,
+  {git,"git://github.com/ninenines/cowboy.git",
+       {ref,"b8e4115eb13488c517d8d8ef33c47d0eaa7838c6"}},
+  0},
+ {<<"cowlib">>,
+  {git,"https://github.com/ninenines/cowlib.git",
+       {ref,"d544a494af4dbc810fc9c15eaf5cc050cced1501"}},
+  1},
+ {<<"ebus">>,
+  {git,"git://github.com/cabol/erlbus.git",
+       {ref,"26e5422d9eb841fa78225d00443b9299d857f462"}},
+  0},
+ {<<"jiffy">>,
+  {git,"git://github.com/davisp/jiffy.git",
+       {ref,"cfc61a2e952dc3182e0f9b1473467563699992e2"}},
+  0},
+ {<<"proper">>,
+  {git,"git://github.com/manopapad/proper.git",
+       {ref,"7b67fbcc7d80fc50f1101b8d12315165a366b2b0"}},
+  1},
+ {<<"ranch">>,
+  {git,"https://github.com/ninenines/ranch.git",
+       {ref,"adf1822defc2b7cfdc7aca112adabfa1d614043c"}},
+  1},
+ {<<"shards">>,{pkg,<<"shards">>,<<"0.6.0">>},1}]}.
+[
+{pkg_hash,[
+ {<<"shards">>, <<"678D292AD74A4598A872930F9B12251F43E97F6050287F1FB712FBFD3D282F75">>}]}
+].
