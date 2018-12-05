@@ -19,7 +19,9 @@ init(_, _Req, _Opts) ->
 websocket_init(_Type, Req, _Opts) ->
   % Create the handler from our custom callback
   Handler = ebus_proc:spawn_handler(fun chat_erlbus_handler:handle_msg/2, [self()]),
+  Username = element(1, cowboy_req:binding(username, Req)),
   ebus:sub(Handler, ?CHATROOM_NAME),
+  ebus:sub(Handler, binary_to_list(Username)),
   {ok, Req, #state{name = get_name(Req), handler = Handler}, ?TIMEOUT}.
 
 websocket_handle({text, Msg}, Req, State) ->
@@ -42,7 +44,8 @@ websocket_terminate(_Reason, _Req, State) ->
 
 get_name(Req) ->
   {{Host, Port}, _} = cowboy_req:peer(Req),
-  Name = list_to_binary(string:join([inet_parse:ntoa(Host), 
-    ":", io_lib:format("~p", [Port])], "")),
+  Username = element(1, cowboy_req:binding(username, Req)),
+  Name = list_to_binary(string:join(["[", inet_parse:ntoa(Host),
+    ":", io_lib:format("~p", [Port]), "]-[", binary_to_list(Username), "]"], "")),
   Name.
   

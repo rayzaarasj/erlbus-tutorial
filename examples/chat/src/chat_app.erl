@@ -12,7 +12,7 @@ start(_Type, _Args) ->
   {'_', [
   {"/", cowboy_static, {priv_file, chat, "index.html"}}
   ,
-  {"/websocket", chat_cowboy_ws_handler, []},
+  {"/websocket/:username", chat_cowboy_ws_handler, []},
   {"/assets/[...]", cowboy_static, {priv_dir, chat, "assets"}}
   ]}
   ]),
