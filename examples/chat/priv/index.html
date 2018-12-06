@@ -19,16 +19,17 @@
         };
 
         function connect() {
+          jQuery("#alertContainer").empty(); 
           let username = jQuery("#username").val();
           jQuery("#username").fadeOut("slow");
           jQuery("#connectButton").fadeOut("slow");
-          jQuery("#greetings").append("<h3> Hello " + username + "! </h3>")
-        wsHost = "ws://" + window.location.host + "/websocket/" + username;
-        websocket = new WebSocket(wsHost);
-        websocket.onopen = function(evt) { onOpen(evt) }; 
-        websocket.onclose = function(evt) { onClose(evt) }; 
-        websocket.onmessage = function(evt) { onMessage(evt) }; 
-        websocket.onerror = function(evt) { onError(evt) }; 
+          jQuery("#greetings").append("<h3 id=\"hello\"> Hello " + username + "! </h3>")
+          wsHost = "ws://" + window.location.host + "/websocket/" + username;
+          websocket = new WebSocket(wsHost);
+          websocket.onopen = function(evt) { onOpen(evt) }; 
+          websocket.onclose = function(evt) { onClose(evt) }; 
+          websocket.onmessage = function(evt) { onMessage(evt) }; 
+          websocket.onerror = function(evt) { onError(evt) }; 
       }; 
 
       function onOpen(evt) { 
@@ -40,6 +41,7 @@
         showAlert('<span style="color: red;">Websocket connection has been closed!</span>');
         jQuery("#username").fadeIn("slow");
         jQuery("#connectButton").fadeIn("slow");
+        jQuery("#hello").remove();
       };  
 
       function onMessage(evt) { 
@@ -53,8 +55,11 @@
       function sendMessage() {
         if(websocket.readyState == websocket.OPEN){
           var txt = jQuery("#textToSend").val();
-          websocket.send(txt);
+          let pm = jQuery("#privateMessage").val();
+          let sendText = pm + ":" + txt;
+          websocket.send(sendText);
           jQuery("#textToSend").val("");
+          jQuery("#privateMessage").val("");
         } else {
            showAlert('<span style="color: red;">ERROR: websocket is not ready</span>');
         };
@@ -86,7 +91,10 @@
       <div id="chatContainer"></div>
       <form onsubmit="sendMessage(); return false;">
         <span>
-          <input id="textToSend" type="text" />
+          <input type="text" id="privateMessage" placeholder="PM To (Empty for Global)" />
+        </span>
+        <span>
+          <input id="textToSend" type="text" placeholder="Message"/>
         </span>
         <span>
           <input type="submit" value="send"/> 

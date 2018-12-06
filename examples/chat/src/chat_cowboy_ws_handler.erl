@@ -25,7 +25,13 @@ websocket_init(_Type, Req, _Opts) ->
   {ok, Req, #state{name = get_name(Req), handler = Handler}, ?TIMEOUT}.
 
 websocket_handle({text, Msg}, Req, State) ->
-  ebus:pub(?CHATROOM_NAME, {State#state.name, Msg}),
+  ListInput = string:tokens(binary_to_list(Msg), ":"),
+  case ListInput of
+    [Pm, Pesan] -> ebus:sub(State#state.handler, Pm),
+                   ebus:pub(Pm, {list_to_binary("[PM:" ++ Pm ++ "]-" ++ binary_to_list(State#state.name)), list_to_binary(Pesan)}),
+                   ebus:unsub(State#state.handler, Pm);
+    [Pesan] -> ebus:pub(?CHATROOM_NAME, {list_to_binary("[Global]-" ++ binary_to_list(State#state.name)), list_to_binary(Pesan)})
+  end,
   {ok, Req, State};
 websocket_handle(_Data, Req, State) ->
   {ok, Req, State}.
