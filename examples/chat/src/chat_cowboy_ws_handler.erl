@@ -26,11 +26,13 @@ websocket_init(_Type, Req, _Opts) ->
 
 websocket_handle({text, Msg}, Req, State) ->
   ListInput = string:tokens(binary_to_list(Msg), ":"),
+  {_, {Hour,Minute,_}} = erlang:localtime(),
+  Time = integer_to_list(Hour) ++ "." ++ integer_to_list(Minute),
   case ListInput of
     [Pm, Pesan] -> ebus:sub(State#state.handler, Pm),
-                   ebus:pub(Pm, {list_to_binary("[PM:" ++ Pm ++ "]-" ++ binary_to_list(State#state.name)), list_to_binary(Pesan)}),
+                   ebus:pub(Pm, {list_to_binary("[PM:" ++ Pm ++ "]-[" ++ Time ++ "]-" ++ binary_to_list(State#state.name)), list_to_binary(Pesan)}),
                    ebus:unsub(State#state.handler, Pm);
-    [Pesan] -> ebus:pub(?CHATROOM_NAME, {list_to_binary("[Global]-" ++ binary_to_list(State#state.name)), list_to_binary(Pesan)})
+    [Pesan] -> ebus:pub(?CHATROOM_NAME, {list_to_binary("[Global]-[" ++ Time ++ "]-" ++ binary_to_list(State#state.name)), list_to_binary(Pesan)})
   end,
   {ok, Req, State};
 websocket_handle(_Data, Req, State) ->
